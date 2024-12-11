@@ -56,13 +56,14 @@ public class CredentialsGradleExtension {
     /**
      * Read the configuration.
      *
-     * @param baseDir                  the base directory.
-     * @param keystoreFileName         the keystore file name.
-     * @param credentialsFileName      the credentials file name.
-     * @param keystorePasswordProperty the property name for the keystore password.
-     * @param keyPasswordProperty      the property name for the key password.
+     * @param baseDir               the base directory.
+     * @param storeFileName         the keystore file name.
+     * @param credentialsFileName   the credentials file name.
+     * @param storePasswordProperty the property name for the store password.
+     * @param keyAliasProperty      the property name for the key alias.
+     * @param keyPasswordProperty   the property name for the key password.
      */
-    public void read(final String baseDir, final String keystoreFileName, final String credentialsFileName, final String keystorePasswordProperty, final String keyPasswordProperty) {
+    public void read(final String baseDir, final String storeFileName, final String credentialsFileName, final String storePasswordProperty, final String keyAliasProperty, final String keyPasswordProperty) {
         if (Logger.isInfoEnabled()) {
             Logger.info("Start processing credentials");
         }
@@ -72,13 +73,13 @@ public class CredentialsGradleExtension {
 
         File baseFile = getBaseFile(baseDir);
 
-        File keystoreFile = getKeystoreFile(baseFile, keystoreFileName);
+        File keystoreFile = getKeystoreFile(baseFile, storeFileName);
         extraProperties.set("keystoreFile", keystoreFile);
 
         File credentialsFile = getCredentialsFile(baseFile, credentialsFileName);
         Properties properties = readCredentialsFile(credentialsFile);
 
-        String keystorePassword = getProperty(properties, keystorePasswordProperty);
+        String keystorePassword = getProperty(properties, storePasswordProperty);
         extraProperties.set("keystorePassword", keystorePassword);
         String keyPassword = getProperty(properties, keyPasswordProperty);
         extraProperties.set("keyPassword", keyPassword);
