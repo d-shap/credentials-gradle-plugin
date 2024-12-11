@@ -99,21 +99,21 @@ public class CredentialsGradleExtension {
         File baseFile = basePath.toFile();
         baseFile = normalizeFilePath(baseFile);
         if (Logger.isDebugEnabled()) {
-            Logger.debug("Base dir: " + baseFile.getAbsolutePath());
+            Logger.debug("Base directory: " + baseFile.getAbsolutePath());
         }
         return baseFile;
     }
 
-    private File getStoreFile(final File baseFile, final String keystoreFileName) {
-        File keystoreFile = new File(baseFile, keystoreFileName);
-        keystoreFile = normalizeFilePath(keystoreFile);
+    private File getStoreFile(final File baseFile, final String storeFileName) {
+        File storeFile = new File(baseFile, storeFileName);
+        storeFile = normalizeFilePath(storeFile);
         if (Logger.isDebugEnabled()) {
-            Logger.debug("Keystore file: " + keystoreFile.getAbsolutePath());
+            Logger.debug("Keystore file: " + storeFile.getAbsolutePath());
         }
-        if (!keystoreFile.exists() || !keystoreFile.isFile()) {
+        if (!storeFile.exists() || !storeFile.isFile()) {
             throw new InvalidUserDataException("Keystore file must be defined");
         }
-        return keystoreFile;
+        return storeFile;
     }
 
     private File getCredentialsFile(final File baseFile, final String credentialsFileName) {
