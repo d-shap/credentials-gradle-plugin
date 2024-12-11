@@ -30,6 +30,8 @@ import javax.inject.Inject;
 
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
+import org.gradle.api.plugins.ExtraPropertiesExtension;
 
 /**
  * Credentials gradle extension.
@@ -63,17 +65,16 @@ public class CredentialsGradleExtension {
             Logger.error("Start processing credentials");
         }
 
+        ExtensionContainer extensionContainer = _project.getExtensions();
+        ExtraPropertiesExtension extraProperties = extensionContainer.getExtraProperties();
+
         File baseFile = getBaseFile(baseDir);
 
         File keystoreFile = getKeystoreFile(baseFile, keystoreFileName);
-        if (Logger.isErrorEnabled()) {
-            Logger.error("keystoreFile: " + keystoreFile.getAbsolutePath());
-        }
+        extraProperties.set("keystoreFile", keystoreFile);
 
         File credentialsFile = getCredentialsFile(baseFile, credentialsFileName);
-        if (Logger.isErrorEnabled()) {
-            Logger.error("credentialsFile: " + credentialsFile.getAbsolutePath());
-        }
+        extraProperties.set("credentialsFile", credentialsFile);
 
         Properties properties = readCredentialsFile(credentialsFile);
         if (Logger.isErrorEnabled()) {
@@ -99,14 +100,19 @@ public class CredentialsGradleExtension {
         File rootFile = rootDir.getAbsoluteFile();
         Path rootPath = rootFile.toPath();
         Path basePath = rootPath.resolve(baseDir);
-        return basePath.toFile();
+        File baseFile = basePath.toFile();
+        baseFile = normalize(baseFile);
+        if (Logger.isErrorEnabled()) {
+            Logger.error("Base dir: " + baseFile.getAbsolutePath());
+        }
+        return baseFile;
     }
 
     private File getKeystoreFile(final File baseFile, final String keystoreFileName) {
         File keystoreFile = new File(baseFile, keystoreFileName);
         keystoreFile = normalize(keystoreFile);
-        if (Logger.isDebugEnabled()) {
-            Logger.debug("Keystore file: " + keystoreFile.getAbsolutePath());
+        if (Logger.isErrorEnabled()) {
+            Logger.error("Keystore file: " + keystoreFile.getAbsolutePath());
         }
         if (!keystoreFile.exists() || !keystoreFile.isFile()) {
             throw new InvalidUserDataException("Keystore file must be defined");
@@ -117,8 +123,8 @@ public class CredentialsGradleExtension {
     private File getCredentialsFile(final File baseFile, final String credentialsFileName) {
         File credentialsFile = new File(baseFile, credentialsFileName);
         credentialsFile = normalize(credentialsFile);
-        if (Logger.isDebugEnabled()) {
-            Logger.debug("Credentials file: " + credentialsFile.getAbsolutePath());
+        if (Logger.isErrorEnabled()) {
+            Logger.error("Credentials file: " + credentialsFile.getAbsolutePath());
         }
         if (!credentialsFile.exists() || !credentialsFile.isFile()) {
             throw new InvalidUserDataException("Credentials file must be defined");
