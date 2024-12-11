@@ -20,7 +20,7 @@ android {
 
 ## Prerequisites
 To use plugin, credentials data should be stored separately in a file system.
-Two files are required - a keystore file and a properties file with a keystore password and a key password.
+Two files are required - a keystore file and a properties file with a keystore password, key alias and a key password.
 For example:
 ```
 \some\dir
@@ -29,7 +29,8 @@ For example:
 ```
 The content of the `credentials.properties` file is the following:
 ```
-KEYSTORE_PASSWORD=pass1
+STORE_PASSWORD=pass1
+KEY_ALIAS=key
 KEY_PASSWORD=pass2
 ```
 
