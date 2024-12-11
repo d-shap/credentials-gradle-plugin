@@ -63,8 +63,8 @@ public class CredentialsGradleExtension {
      * @param keyPasswordProperty      the property name for the key password.
      */
     public void read(final String baseDir, final String keystoreFileName, final String credentialsFileName, final String keystorePasswordProperty, final String keyPasswordProperty) {
-        if (Logger.isErrorEnabled()) {
-            Logger.error("Start processing credentials");
+        if (Logger.isInfoEnabled()) {
+            Logger.info("Start processing credentials");
         }
 
         ExtensionContainer extensionContainer = _project.getExtensions();
@@ -83,8 +83,8 @@ public class CredentialsGradleExtension {
         String keyPassword = getProperty(properties, keyPasswordProperty);
         extraProperties.set("keyPassword", keyPassword);
 
-        if (Logger.isErrorEnabled()) {
-            Logger.error("Finish processing credentials");
+        if (Logger.isInfoEnabled()) {
+            Logger.info("Finish processing credentials");
         }
     }
 
@@ -95,8 +95,8 @@ public class CredentialsGradleExtension {
         Path basePath = rootPath.resolve(baseDir);
         File baseFile = basePath.toFile();
         baseFile = normalizeFilePath(baseFile);
-        if (Logger.isErrorEnabled()) {
-            Logger.error("Base dir: " + baseFile.getAbsolutePath());
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Base dir: " + baseFile.getAbsolutePath());
         }
         return baseFile;
     }
@@ -104,8 +104,8 @@ public class CredentialsGradleExtension {
     private File getKeystoreFile(final File baseFile, final String keystoreFileName) {
         File keystoreFile = new File(baseFile, keystoreFileName);
         keystoreFile = normalizeFilePath(keystoreFile);
-        if (Logger.isErrorEnabled()) {
-            Logger.error("Keystore file: " + keystoreFile.getAbsolutePath());
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Keystore file: " + keystoreFile.getAbsolutePath());
         }
         if (!keystoreFile.exists() || !keystoreFile.isFile()) {
             throw new InvalidUserDataException("Keystore file must be defined");
@@ -116,8 +116,8 @@ public class CredentialsGradleExtension {
     private File getCredentialsFile(final File baseFile, final String credentialsFileName) {
         File credentialsFile = new File(baseFile, credentialsFileName);
         credentialsFile = normalizeFilePath(credentialsFile);
-        if (Logger.isErrorEnabled()) {
-            Logger.error("Credentials file: " + credentialsFile.getAbsolutePath());
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Credentials file: " + credentialsFile.getAbsolutePath());
         }
         if (!credentialsFile.exists() || !credentialsFile.isFile()) {
             throw new InvalidUserDataException("Credentials file must be defined");
@@ -138,8 +138,8 @@ public class CredentialsGradleExtension {
         } catch (IOException ex) {
             throw new InvalidUserDataException("Failed to read credentials file", ex);
         }
-        if (Logger.isErrorEnabled()) {
-            Logger.error("Credentials file is read");
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Credentials file is read");
         }
         return properties;
     }
@@ -149,8 +149,8 @@ public class CredentialsGradleExtension {
         if (value == null) {
             throw new InvalidUserDataException("Property " + property + " must be defined");
         } else {
-            if (Logger.isErrorEnabled()) {
-                Logger.error("Property " + property + " is read");
+            if (Logger.isInfoEnabled()) {
+                Logger.info("Property " + property + " is read");
             }
             return value;
         }
