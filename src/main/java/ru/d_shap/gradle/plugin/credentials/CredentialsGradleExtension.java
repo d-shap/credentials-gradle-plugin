@@ -22,52 +22,70 @@ package ru.d_shap.gradle.plugin.credentials;
 import java.io.File;
 import java.nio.file.Path;
 
-import org.gradle.api.Action;
+import javax.inject.Inject;
+
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.ExtensionContainer;
-import org.gradle.api.plugins.ExtraPropertiesExtension;
-
-import ru.d_shap.gradle.plugin.credentials.configuration.ExtensionConfiguration;
 
 /**
- * Credentials gradle configuration.
+ * Credentials gradle extension.
  *
  * @author Dmitry Shapovalov
  */
-final class CredentialsGradleConfiguration implements Action<Project> {
+public class CredentialsGradleExtension {
 
-    private final ExtensionConfiguration _extensionConfiguration;
+    private final Project _project;
 
-    CredentialsGradleConfiguration(final ExtensionConfiguration extensionConfiguration) {
+    /**
+     * Create new object.
+     *
+     * @param project the project.
+     */
+    @Inject
+    public CredentialsGradleExtension(final Project project) {
         super();
-        _extensionConfiguration = extensionConfiguration;
+        _project = project;
     }
 
-    @Override
-    public void execute(final Project project) {
-        if (Logger.isInfoEnabled()) {
-            Logger.info("Start processing credentials");
+    /**
+     * Read the configuration.
+     *
+     * @param baseDir             the base directory.
+     * @param keystoreFileName    the keystore file name.
+     * @param credentialsFileName the credentials file name.
+     */
+    public void read(final String baseDir, final String keystoreFileName, final String credentialsFileName) {
+        if (Logger.isErrorEnabled()) {
+            Logger.error("Start processing credentials");
         }
 
-        ExtensionContainer extensionContainer = project.getExtensions();
-        ExtraPropertiesExtension extraProperties = extensionContainer.getExtraProperties();
+        File baseFile = getBaseFile(baseDir);
 
-        File keystoreFile = getKeystoreFile();
-        extraProperties.set("keystoreFile", keystoreFile);
+        File keystoreFile = getKeystoreFile(baseFile, keystoreFileName);
+        if (Logger.isErrorEnabled()) {
+            Logger.error("keystoreFile: " + keystoreFile.getAbsolutePath());
+        }
 
-        File credentialsFile = getCredentialsFile();
-        extraProperties.set("credentialsFile", credentialsFile);
+        File credentialsFile = getCredentialsFile(baseFile, credentialsFileName);
+        if (Logger.isErrorEnabled()) {
+            Logger.error("credentialsFile: " + credentialsFile.getAbsolutePath());
+        }
 
-        if (Logger.isInfoEnabled()) {
-            Logger.info("Finish processing credentials");
+        if (Logger.isErrorEnabled()) {
+            Logger.error("Finish processing credentials");
         }
     }
 
-    private File getKeystoreFile() {
-        File baseDir = _extensionConfiguration.getBaseDir();
-        String keystoreFileName = _extensionConfiguration.getKeystoreFileName();
-        File keystoreFile = new File(baseDir, keystoreFileName);
+    private File getBaseFile(final String baseDir) {
+        File rootDir = _project.getRootDir();
+        File rootFile = rootDir.getAbsoluteFile();
+        Path rootPath = rootFile.toPath();
+        Path basePath = rootPath.resolve(baseDir);
+        return basePath.toFile();
+    }
+
+    private File getKeystoreFile(final File baseFile, final String keystoreFileName) {
+        File keystoreFile = new File(baseFile, keystoreFileName);
         keystoreFile = normalize(keystoreFile);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Keystore file: " + keystoreFile.getAbsolutePath());
@@ -78,10 +96,8 @@ final class CredentialsGradleConfiguration implements Action<Project> {
         return keystoreFile;
     }
 
-    private File getCredentialsFile() {
-        File baseDir = _extensionConfiguration.getBaseDir();
-        String credentialsFileName = _extensionConfiguration.getCredentialsFileName();
-        File credentialsFile = new File(baseDir, credentialsFileName);
+    private File getCredentialsFile(final File baseFile, final String credentialsFileName) {
+        File credentialsFile = new File(baseFile, credentialsFileName);
         credentialsFile = normalize(credentialsFile);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Credentials file: " + credentialsFile.getAbsolutePath());

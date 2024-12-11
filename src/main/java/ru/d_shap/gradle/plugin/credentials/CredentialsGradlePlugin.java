@@ -19,12 +19,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 package ru.d_shap.gradle.plugin.credentials;
 
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.ExtensionContainer;
-
-import ru.d_shap.gradle.plugin.credentials.configuration.ExtensionConfiguration;
 
 /**
  * Credentials gradle plugin.
@@ -33,9 +30,9 @@ import ru.d_shap.gradle.plugin.credentials.configuration.ExtensionConfiguration;
  */
 public class CredentialsGradlePlugin implements Plugin<Project> {
 
-    static final String TASK_NAME = "сredentials";
+    static final String TASK_NAME = "credentials";
 
-    static final String EXTENSION_NAME = "сredentials";
+    static final String EXTENSION_NAME = "credentials";
 
     /**
      * Create new object.
@@ -46,19 +43,8 @@ public class CredentialsGradlePlugin implements Plugin<Project> {
 
     @Override
     public void apply(final Project project) {
-        ExtensionConfiguration extensionConfiguration = getExtensionConfiguration(project);
-
-        addProjectAction(project, extensionConfiguration);
-    }
-
-    private ExtensionConfiguration getExtensionConfiguration(final Project project) {
         ExtensionContainer extensions = project.getExtensions();
-        return extensions.create(EXTENSION_NAME, ExtensionConfiguration.class, project);
-    }
-
-    private void addProjectAction(final Project project, final ExtensionConfiguration extensionConfiguration) {
-        Action<Project> action = new CredentialsGradleConfiguration(extensionConfiguration);
-        project.afterEvaluate(action);
+        extensions.create(EXTENSION_NAME, CredentialsGradleExtension.class, project);
     }
 
 }
