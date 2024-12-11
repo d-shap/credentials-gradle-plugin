@@ -20,7 +20,11 @@
 package ru.d_shap.gradle.plugin.credentials;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -71,6 +75,20 @@ public class CredentialsGradleExtension {
             Logger.error("credentialsFile: " + credentialsFile.getAbsolutePath());
         }
 
+        Properties properties = readCredentialsFile(credentialsFile);
+        if (Logger.isErrorEnabled()) {
+            Logger.error("properties: " + properties);
+        }
+
+        String storePassword = properties.getProperty("STORE_PASSWORD");
+        if (Logger.isErrorEnabled()) {
+            Logger.error("storePassword: " + storePassword);
+        }
+        String keyPassword = properties.getProperty("KEY_PASSWORD");
+        if (Logger.isErrorEnabled()) {
+            Logger.error("keyPassword: " + keyPassword);
+        }
+
         if (Logger.isErrorEnabled()) {
             Logger.error("Finish processing credentials");
         }
@@ -112,6 +130,16 @@ public class CredentialsGradleExtension {
         Path path = file.toPath();
         path = path.normalize();
         return path.toFile();
+    }
+
+    private Properties readCredentialsFile(final File credentialsFile) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = new FileInputStream(credentialsFile)) {
+            properties.load(inputStream);
+        } catch (IOException ex) {
+            throw new InvalidUserDataException("Failed to read credentials file", ex);
+        }
+        return properties;
     }
 
 }
