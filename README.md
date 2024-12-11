@@ -19,7 +19,7 @@ android {
 ```
 
 ## Prerequisites
-To use plugin, this data should be stored separatly in a file system.
+To use plugin, this data should be stored separately in a file system.
 Two files are required - a keystore file and a properties file with keystore and key passwords.
 For example:
 ```
