@@ -73,15 +73,17 @@ public class CredentialsGradleExtension {
 
         File baseFile = getBaseFile(baseDir);
 
-        File keystoreFile = getKeystoreFile(baseFile, storeFileName);
-        extraProperties.set("keystoreFile", keystoreFile);
+        File storeFile = getStoreFile(baseFile, storeFileName);
+        extraProperties.set("storeFile", storeFile);
 
         File credentialsFile = getCredentialsFile(baseFile, credentialsFileName);
         Properties properties = readCredentialsFile(credentialsFile);
 
-        String keystorePassword = getProperty(properties, storePasswordProperty);
-        extraProperties.set("keystorePassword", keystorePassword);
-        String keyPassword = getProperty(properties, keyPasswordProperty);
+        String storePassword = getProperty(properties, storePasswordProperty, null);
+        extraProperties.set("storePassword", storePassword);
+        String keyAlias = getProperty(properties, keyAliasProperty, "key");
+        extraProperties.set("keyAlias", keyAlias);
+        String keyPassword = getProperty(properties, keyPasswordProperty, null);
         extraProperties.set("keyPassword", keyPassword);
 
         if (Logger.isInfoEnabled()) {
@@ -102,7 +104,7 @@ public class CredentialsGradleExtension {
         return baseFile;
     }
 
-    private File getKeystoreFile(final File baseFile, final String keystoreFileName) {
+    private File getStoreFile(final File baseFile, final String keystoreFileName) {
         File keystoreFile = new File(baseFile, keystoreFileName);
         keystoreFile = normalizeFilePath(keystoreFile);
         if (Logger.isDebugEnabled()) {
@@ -145,7 +147,7 @@ public class CredentialsGradleExtension {
         return properties;
     }
 
-    private String getProperty(final Properties properties, final String property) {
+    private String getProperty(final Properties properties, final String property, final String defaultValue) {
         String value = properties.getProperty(property);
         if (value == null) {
             throw new InvalidUserDataException("Property " + property + " must be defined");
