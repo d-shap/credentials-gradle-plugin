@@ -74,21 +74,12 @@ public class CredentialsGradleExtension {
         extraProperties.set("keystoreFile", keystoreFile);
 
         File credentialsFile = getCredentialsFile(baseFile, credentialsFileName);
-        extraProperties.set("credentialsFile", credentialsFile);
-
         Properties properties = readCredentialsFile(credentialsFile);
-        if (Logger.isErrorEnabled()) {
-            Logger.error("properties: " + properties);
-        }
 
-        String storePassword = properties.getProperty("STORE_PASSWORD");
-        if (Logger.isErrorEnabled()) {
-            Logger.error("storePassword: " + storePassword);
-        }
-        String keyPassword = properties.getProperty("KEY_PASSWORD");
-        if (Logger.isErrorEnabled()) {
-            Logger.error("keyPassword: " + keyPassword);
-        }
+        String storePassword = getProperty(properties, "STORE_PASSWORD");
+        extraProperties.set("storePassword", storePassword);
+        String keyPassword = getProperty(properties, "KEY_PASSWORD");
+        extraProperties.set("keyPassword", keyPassword);
 
         if (Logger.isErrorEnabled()) {
             Logger.error("Finish processing credentials");
@@ -145,7 +136,22 @@ public class CredentialsGradleExtension {
         } catch (IOException ex) {
             throw new InvalidUserDataException("Failed to read credentials file", ex);
         }
+        if (Logger.isErrorEnabled()) {
+            Logger.error("Credentials file is read");
+        }
         return properties;
+    }
+
+    private String getProperty(final Properties properties, final String propertyName) {
+        String propertyValue = properties.getProperty(propertyName);
+        if (propertyValue == null) {
+            throw new InvalidUserDataException("Property " + propertyName + " must be defined in credentials file");
+        } else {
+            if (Logger.isErrorEnabled()) {
+                Logger.error("Property " + propertyName + " is read");
+            }
+            return propertyValue;
+        }
     }
 
 }
