@@ -148,7 +148,15 @@ public class CredentialsGradleExtension {
     }
 
     private String getProperty(final Properties properties, final String property, final String defaultValue) {
-        String value = properties.getProperty(property);
+        String value;
+        if (property == null) {
+            value = null;
+        } else {
+            value = properties.getProperty(property);
+        }
+        if (value == null) {
+            value = defaultValue;
+        }
         if (value == null) {
             throw new InvalidUserDataException("Property " + property + " must be defined");
         } else {
