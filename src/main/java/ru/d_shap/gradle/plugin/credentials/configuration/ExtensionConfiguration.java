@@ -19,7 +19,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 package ru.d_shap.gradle.plugin.credentials.configuration;
 
+import java.io.File;
+
 import javax.inject.Inject;
+
+import org.gradle.api.Project;
 
 /**
  * The extension configuration.
@@ -28,12 +32,82 @@ import javax.inject.Inject;
  */
 public class ExtensionConfiguration {
 
+    private final Project _project;
+
+    private File _baseDir;
+
+    private String _keystoreFileName;
+
+    private String _credentialsFileName;
+
     /**
      * Create new object.
+     *
+     * @param project the project.
      */
     @Inject
-    public ExtensionConfiguration() {
+    public ExtensionConfiguration(final Project project) {
         super();
+        _project = project;
+        _baseDir = null;
+        _keystoreFileName = null;
+        _credentialsFileName = null;
+    }
+
+    /**
+     * Get the base directory.
+     *
+     * @return the base directory.
+     */
+    public File getBaseDir() {
+        return _baseDir;
+    }
+
+    /**
+     * Set the base directory.
+     *
+     * @param baseDir the base directory.
+     */
+    public void baseDir(final String baseDir) {
+        File rootDir = _project.getRootDir();
+        File rootFile = rootDir.getAbsoluteFile();
+        _baseDir = new File(rootFile, baseDir);
+    }
+
+    /**
+     * Get the keystore file name.
+     *
+     * @return the keystore file name.
+     */
+    public String getKeystoreFileName() {
+        return _keystoreFileName;
+    }
+
+    /**
+     * Set the keystore file name.
+     *
+     * @param keystoreFileName the keystore file name.
+     */
+    public void keystoreFileName(final String keystoreFileName) {
+        _keystoreFileName = keystoreFileName;
+    }
+
+    /**
+     * Get the credentials file name.
+     *
+     * @return the credentials file name.
+     */
+    public String getCredentialsFileName() {
+        return _credentialsFileName;
+    }
+
+    /**
+     * Set the credentials file name.
+     *
+     * @param credentialsFileName the credentials file name.
+     */
+    public void credentialsFileName(final String credentialsFileName) {
+        _credentialsFileName = credentialsFileName;
     }
 
 }
