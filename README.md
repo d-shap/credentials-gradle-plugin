@@ -6,12 +6,14 @@ But it can be used in other use-cases.
 
 Android sign configuration looks like this:
 ```
-signingConfigs {
-    release {
-        storeFile file('path')
-        storePassword 'pass1'
-        keyAlias 'key'
-        keyPassword 'pass2'
+android {
+    signingConfigs {
+        release {
+            storeFile file('path')
+            storePassword 'pass1'
+            keyAlias 'key'
+            keyPassword 'pass2'
+        }
     }
 }
 ```
@@ -41,7 +43,7 @@ plugins {
 
 Plugin provides a `read` function.
 This function accepts the following parameters:
-* `baseDir` - the directory with a keystore file and a credentials file
+* `baseDir` - the directory with a keystore file and a credentials file, relative to the project's root directory
 * `keystoreFileName` - the name of a keystore file within a base directory
 * `credentialsFileName` - the name of a credentials file within a base directory
 * `keystorePasswordProperty` - the property for a keystore password property
@@ -54,7 +56,6 @@ Plugin exposes the following properties after a `read` function is called:
 
 ## Example
 ```
-
 android {
     signingConfigs {
         release {
