@@ -19,8 +19,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 package ru.d_shap.gradle.plugin.credentials;
 
+import java.io.File;
+
 import org.gradle.api.Action;
+import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
+import org.gradle.api.plugins.ExtraPropertiesExtension;
 
 import ru.d_shap.gradle.plugin.credentials.configuration.ExtensionConfiguration;
 
@@ -40,7 +45,48 @@ final class CredentialsGradleConfiguration implements Action<Project> {
 
     @Override
     public void execute(final Project project) {
+        if (Logger.isInfoEnabled()) {
+            Logger.info("Start processing credentials");
+        }
 
+        ExtensionContainer extensionContainer = project.getExtensions();
+        ExtraPropertiesExtension extraProperties = extensionContainer.getExtraProperties();
+
+        File keystoreFile = getKeystoreFile();
+        extraProperties.set("keystoreFile", keystoreFile);
+
+        File credentialsFile = getCredentialsFile();
+        extraProperties.set("credentialsFile", credentialsFile);
+
+        if (Logger.isInfoEnabled()) {
+            Logger.info("Finish processing credentials");
+        }
+    }
+
+    private File getKeystoreFile() {
+        File baseDir = _extensionConfiguration.getBaseDir();
+        String keystoreFileName = _extensionConfiguration.getKeystoreFileName();
+        File keystoreFile = new File(baseDir, keystoreFileName);
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Keystore file: " + keystoreFile.getAbsolutePath());
+        }
+        if (!keystoreFile.exists() || !keystoreFile.isFile()) {
+            throw new InvalidUserDataException("Keystore file must be defined");
+        }
+        return keystoreFile;
+    }
+
+    private File getCredentialsFile() {
+        File baseDir = _extensionConfiguration.getBaseDir();
+        String credentialsFileName = _extensionConfiguration.getCredentialsFileName();
+        File credentialsFile = new File(baseDir, credentialsFileName);
+        if (Logger.isDebugEnabled()) {
+            Logger.debug("Credentials file: " + credentialsFile.getAbsolutePath());
+        }
+        if (!credentialsFile.exists() || !credentialsFile.isFile()) {
+            throw new InvalidUserDataException("Credentials file must be defined");
+        }
+        return credentialsFile;
     }
 
 }
