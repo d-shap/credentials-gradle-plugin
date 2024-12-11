@@ -53,7 +53,7 @@ public class CredentialsGradlePlugin implements Plugin<Project> {
 
     private ExtensionConfiguration getExtensionConfiguration(final Project project) {
         ExtensionContainer extensions = project.getExtensions();
-        return extensions.create(EXTENSION_NAME, ExtensionConfiguration.class);
+        return extensions.create(EXTENSION_NAME, ExtensionConfiguration.class, project);
     }
 
     private void addProjectAction(final Project project, final ExtensionConfiguration extensionConfiguration) {
