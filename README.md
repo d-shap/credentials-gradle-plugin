@@ -19,15 +19,15 @@ android {
 ```
 
 ## Prerequisites
-To use plugin, this data should be stored separately in a file system.
-Two files are required - a keystore file and a properties file with keystore and key passwords.
+To use plugin, credentials data should be stored separately in a file system.
+Two files are required - a keystore file and a properties file with a keystore password and a key password.
 For example:
 ```
 \some\dir
     keystore.jks
     credentials.properties
 ```
-The content for the `credentials.properties` file is the following:
+The content of the `credentials.properties` file is the following:
 ```
 KEYSTORE_PASSWORD=pass1
 KEY_PASSWORD=pass2
@@ -44,8 +44,8 @@ plugins {
 Plugin provides a `read` function.
 This function accepts the following parameters:
 * `baseDir` - the directory with a keystore file and a credentials file, relative to the project's root directory
-* `keystoreFileName` - the name of a keystore file within a base directory
-* `credentialsFileName` - the name of a credentials file within a base directory
+* `keystoreFileName` - the name of a keystore file within a `baseDir`
+* `credentialsFileName` - the name of a credentials file within a `baseDir`
 * `keystorePasswordProperty` - the property for a keystore password property
 * `keyPasswordProperty` - the property for a key password property
 
