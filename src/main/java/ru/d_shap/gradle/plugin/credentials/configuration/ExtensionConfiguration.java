@@ -20,6 +20,7 @@
 package ru.d_shap.gradle.plugin.credentials.configuration;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -71,7 +72,9 @@ public class ExtensionConfiguration {
     public void baseDir(final String baseDir) {
         File rootDir = _project.getRootDir();
         File rootFile = rootDir.getAbsoluteFile();
-        _baseDir = new File(rootFile, baseDir);
+        Path rootPath = rootFile.toPath();
+        Path basePath = rootPath.resolve(baseDir);
+        _baseDir = basePath.toFile();
     }
 
     /**
