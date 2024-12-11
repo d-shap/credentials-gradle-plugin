@@ -33,6 +33,8 @@ import ru.d_shap.gradle.plugin.credentials.configuration.ExtensionConfiguration;
  */
 public class CredentialsGradlePlugin implements Plugin<Project> {
 
+    static final String TASK_NAME = "сredentials";
+
     static final String EXTENSION_NAME = "сredentials";
 
     /**
