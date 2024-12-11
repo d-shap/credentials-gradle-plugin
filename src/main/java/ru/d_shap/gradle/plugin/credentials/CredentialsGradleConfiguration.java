@@ -20,6 +20,7 @@
 package ru.d_shap.gradle.plugin.credentials;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.gradle.api.Action;
 import org.gradle.api.InvalidUserDataException;
@@ -67,6 +68,7 @@ final class CredentialsGradleConfiguration implements Action<Project> {
         File baseDir = _extensionConfiguration.getBaseDir();
         String keystoreFileName = _extensionConfiguration.getKeystoreFileName();
         File keystoreFile = new File(baseDir, keystoreFileName);
+        keystoreFile = normalize(keystoreFile);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Keystore file: " + keystoreFile.getAbsolutePath());
         }
@@ -80,6 +82,7 @@ final class CredentialsGradleConfiguration implements Action<Project> {
         File baseDir = _extensionConfiguration.getBaseDir();
         String credentialsFileName = _extensionConfiguration.getCredentialsFileName();
         File credentialsFile = new File(baseDir, credentialsFileName);
+        credentialsFile = normalize(credentialsFile);
         if (Logger.isDebugEnabled()) {
             Logger.debug("Credentials file: " + credentialsFile.getAbsolutePath());
         }
@@ -87,6 +90,12 @@ final class CredentialsGradleConfiguration implements Action<Project> {
             throw new InvalidUserDataException("Credentials file must be defined");
         }
         return credentialsFile;
+    }
+
+    private File normalize(final File file) {
+        Path path = file.toPath();
+        path = path.normalize();
+        return path.toFile();
     }
 
 }
