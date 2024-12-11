@@ -20,9 +20,9 @@
 package ru.d_shap.gradle.plugin.credentials;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
@@ -134,7 +134,7 @@ public class CredentialsGradleExtension {
 
     private Properties readCredentialsFile(final File credentialsFile) {
         Properties properties = new Properties();
-        try (InputStream inputStream = new FileInputStream(credentialsFile)) {
+        try (InputStream inputStream = Files.newInputStream(credentialsFile.toPath())) {
             properties.load(inputStream);
         } catch (IOException ex) {
             throw new InvalidUserDataException("Failed to read credentials file", ex);
