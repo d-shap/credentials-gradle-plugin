@@ -56,11 +56,13 @@ public class CredentialsGradleExtension {
     /**
      * Read the configuration.
      *
-     * @param baseDir             the base directory.
-     * @param keystoreFileName    the keystore file name.
-     * @param credentialsFileName the credentials file name.
+     * @param baseDir                  the base directory.
+     * @param keystoreFileName         the keystore file name.
+     * @param credentialsFileName      the credentials file name.
+     * @param keystorePasswordProperty the property name for the keystore password.
+     * @param keyPasswordProperty      the property name for the key password.
      */
-    public void read(final String baseDir, final String keystoreFileName, final String credentialsFileName) {
+    public void read(final String baseDir, final String keystoreFileName, final String credentialsFileName, final String keystorePasswordProperty, final String keyPasswordProperty) {
         if (Logger.isErrorEnabled()) {
             Logger.error("Start processing credentials");
         }
@@ -76,9 +78,9 @@ public class CredentialsGradleExtension {
         File credentialsFile = getCredentialsFile(baseFile, credentialsFileName);
         Properties properties = readCredentialsFile(credentialsFile);
 
-        String storePassword = getProperty(properties, "STORE_PASSWORD");
-        extraProperties.set("storePassword", storePassword);
-        String keyPassword = getProperty(properties, "KEY_PASSWORD");
+        String keystorePassword = getProperty(properties, keystorePasswordProperty);
+        extraProperties.set("keystorePassword", keystorePassword);
+        String keyPassword = getProperty(properties, keyPasswordProperty);
         extraProperties.set("keyPassword", keyPassword);
 
         if (Logger.isErrorEnabled()) {
@@ -92,7 +94,7 @@ public class CredentialsGradleExtension {
         Path rootPath = rootFile.toPath();
         Path basePath = rootPath.resolve(baseDir);
         File baseFile = basePath.toFile();
-        baseFile = normalize(baseFile);
+        baseFile = normalizeFilePath(baseFile);
         if (Logger.isErrorEnabled()) {
             Logger.error("Base dir: " + baseFile.getAbsolutePath());
         }
@@ -101,7 +103,7 @@ public class CredentialsGradleExtension {
 
     private File getKeystoreFile(final File baseFile, final String keystoreFileName) {
         File keystoreFile = new File(baseFile, keystoreFileName);
-        keystoreFile = normalize(keystoreFile);
+        keystoreFile = normalizeFilePath(keystoreFile);
         if (Logger.isErrorEnabled()) {
             Logger.error("Keystore file: " + keystoreFile.getAbsolutePath());
         }
@@ -113,7 +115,7 @@ public class CredentialsGradleExtension {
 
     private File getCredentialsFile(final File baseFile, final String credentialsFileName) {
         File credentialsFile = new File(baseFile, credentialsFileName);
-        credentialsFile = normalize(credentialsFile);
+        credentialsFile = normalizeFilePath(credentialsFile);
         if (Logger.isErrorEnabled()) {
             Logger.error("Credentials file: " + credentialsFile.getAbsolutePath());
         }
@@ -123,7 +125,7 @@ public class CredentialsGradleExtension {
         return credentialsFile;
     }
 
-    private File normalize(final File file) {
+    private File normalizeFilePath(final File file) {
         Path path = file.toPath();
         path = path.normalize();
         return path.toFile();
@@ -142,15 +144,15 @@ public class CredentialsGradleExtension {
         return properties;
     }
 
-    private String getProperty(final Properties properties, final String propertyName) {
-        String propertyValue = properties.getProperty(propertyName);
-        if (propertyValue == null) {
-            throw new InvalidUserDataException("Property " + propertyName + " must be defined in credentials file");
+    private String getProperty(final Properties properties, final String property) {
+        String value = properties.getProperty(property);
+        if (value == null) {
+            throw new InvalidUserDataException("Property " + property + " must be defined");
         } else {
             if (Logger.isErrorEnabled()) {
-                Logger.error("Property " + propertyName + " is read");
+                Logger.error("Property " + property + " is read");
             }
-            return propertyValue;
+            return value;
         }
     }
 
